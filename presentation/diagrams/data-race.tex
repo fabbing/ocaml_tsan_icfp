@@ -1,0 +1,20 @@
+\begin{tikzpicture}[
+  base/.style={font=\small\ttfamily},
+  arr/.style={base, -{latex}, thick, color=mComplA},
+  ev/.style={base, minimum width=4em},
+  frame/.style={base, color=gray},
+  empirical/.style={color=mLightBrown}
+]
+  \node[ev] (wa) at (0, 0) { a := 1 };
+  \node[ev] (rb) at (0, -1) { !b };
+  \node[ev] (wb) at (0, -2.5) { b := 1 };
+  \node[ev] (ra) at (0, -3.5) { !a };
+
+  \node[frame, fit=(wa) (rb), draw,dashed, label={[anchor=north west, frame] above right:\texttt{d1}}] {};
+  \node[frame, fit=(wb) (ra), draw,dashed, label={[anchor=north west, frame] above right:\texttt{d2}}] {};
+
+  \draw[arr] (wa) to (rb);
+  \draw[arr] (wb) to (ra);
+  \draw<3->[arr, empirical] (rb) to (wb);
+  \draw<4->[arr, empirical] (ra.west) to[bend left=80] (wa.west);
+\end{tikzpicture}

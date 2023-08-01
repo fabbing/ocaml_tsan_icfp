@@ -1,0 +1,73 @@
+\begin{tikzpicture}[
+on grid,
+node distance=1,
+%
+scale=0.8, every node/.append style={transform shape},
+%
+base/.style={color=mDarkTeal, semithick},
+%
+thread-name/.style={base, color=mDarkTeal!60},
+%
+clock/.style={base, rectangle, rounded corners= 1, minimum width=10mm, minimum height=5mm, inner sep=0, draw=mDarkTeal},
+clock-t1/.style={clock, fill=YellowOrange!30},
+clock-t2/.style={clock, fill=RoyalBlue!40},
+%
+arrow/.style={base, ->, >=stealth, color=mDarkTeal},
+short-arrow/.style={arrow, shorten <=2mm, shorten >=2mm},
+long-arrow/.style={arrow, shorten <=-1mm, shorten >=-2mm}
+]
+
+
+% Thread 1
+\node [base] (thread1) { Thread 1 };
+
+\node [thread-name, below left=0.5 and 0.5 of thread1] (thread1-t1) { $t_1$ };
+\node [thread-name, below right=0.5 and 0.5 of thread1] (thread1-t2) { $t_2$ };
+
+\node [clock-t1, below=0.5 of thread1-t1] (event-t1-t1-0) { 0 };
+\node [clock-t2, below=0.5 of thread1-t2] (event-t1-t2-0) { 0 };
+
+\begin{visibleenv}<2->
+  \node [clock-t1, below=of event-t1-t1-0] (event-t1-t1-1) { 1 };
+  \node [clock-t2, below=of event-t1-t2-0] (event-t1-t2-1) { 0 };
+
+  \draw [long-arrow] ([xshift=-3mm]event-t1-t1-0.south) -- node [label=left:Mutex.lock] {} ([xshift=-3mm]event-t1-t1-1.north);
+\end{visibleenv}
+
+\begin{visibleenv}<3->
+  \node [clock-t1, below=of event-t1-t1-1] (event-t1-t1-2) { 2 };
+  \node [clock-t2, below=of event-t1-t2-1] (event-t1-t2-2) { 0 };
+
+  \draw [long-arrow] ([xshift=-3mm]event-t1-t1-1.south) -- node [label=left:write] {} ([xshift=-3mm]event-t1-t1-2.north);
+  \node [clock-t1, below=of event-t1-t1-2] (event-t1-t1-3) { 3 };
+  \node [clock-t2, below=of event-t1-t2-2] (event-t1-t2-3) { 0 };
+
+  \draw [long-arrow] ([xshift=-3mm]event-t1-t1-2.south) -- node [label=left:read] {} ([xshift=-3mm]event-t1-t1-3.north);
+
+  \node [clock-t1, below=of event-t1-t1-3] (event-t1-t1-4) { 4 };
+  \node [clock-t2, below=of event-t1-t2-3] (event-t1-t2-4) { 0 };
+
+  \draw [long-arrow] ([xshift=-3mm]event-t1-t1-3.south) -- node [label=left:Mutex.unlock] {} ([xshift=-3mm]event-t1-t1-4.north);
+\end{visibleenv}
+
+
+% Thread 2
+\node [base, right=4 of thread1] (thread2) { Thread 2 };
+
+\node [thread-name, below left=0.5 and 0.5 of thread2] (thread2-t1) { $t_1$ };
+\node [thread-name, below right=0.5 and 0.5 of thread2] (thread2-t2) { $t_2$ };
+
+\node [clock-t1, below=0.5 of thread2-t1] (event-t2-t1-0) { 0 };
+\node [clock-t2, below=0.5 of thread2-t2] (event-t2-t2-0) { 0 };
+
+\begin{visibleenv}<4->
+  \node [clock-t1, below=5 of event-t2-t1-0] (event-t2-t1-1) { 4 };
+  \node [clock-t2, below=5 of event-t2-t2-0] (event-t2-t2-1) { 1 };
+
+  \draw [short-arrow] (event-t2-t1-0.south east) -- (event-t2-t1-1.north east);
+  \draw [short-arrow] (event-t1-t2-4.east) -- node [sloped, above] {Mutex.lock} (event-t2-t1-1.west);
+
+  \node [below right=0.5 and 0.5 of event-t2-t1-1, align=left, anchor=north] { \small $t_1 = \max(4,0)$ \\ \small $t_2 = \max(0,1)$ };
+\end{visibleenv}
+
+\end{tikzpicture}

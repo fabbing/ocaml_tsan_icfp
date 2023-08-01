@@ -1,0 +1,8 @@
+(function fun_521 (param)
+ (extcall "__tsan_write8" r -> unit)
+ (store r 10)
+
+ (let x
+   (extcall "__tsan_read8" r -> unit)
+   (load_mut r))
+   (app g x))

@@ -1,0 +1,8 @@
+(function fun_521 (param)
+
+ (store r 10)
+
+ (let x
+
+   (load_mut r)
+   (app g x))

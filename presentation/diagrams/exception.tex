@@ -1,0 +1,39 @@
+\begin{tikzpicture}[
+node distance=1mm,
+scale=1, every node/.append style={transform shape},
+base/.style={draw, color=mDarkTeal, semithick},
+frame/.style={base, rectangle, rounded corners= 1, minimum width=40mm, minimum height=8mm, inner sep=0, fill=black!3},
+scan-frame/.style={frame, draw=mLightBrown, dashed},
+stack/.style={rectangle, rounded corners=2},
+arrow/.style={base, ->, >=stealth, color=mDarkTeal!70},
+short-arrow/.style={arrow, shorten <=2mm, shorten >=2mm},
+long-arrow/.style={arrow, shorten <=-1mm, shorten >=-2mm}
+]
+
+\pgfdeclarelayer{background};
+\pgfsetlayers{background, main};
+
+\node[frame] (frame-f) { f };
+\coordinate[below=3 of frame-f] (stack-end);
+
+\ifthenelse{\step=1}{
+\node[frame, below=of frame-f] (frame-g) { g };
+\node[frame, below=of frame-g] (frame-h) { h };
+\node[frame, below=of frame-h] (frame-i) { i };
+}{}
+
+\ifthenelse{\step=3}{
+\node[scan-frame, below=of frame-f] (frame-g) { g };
+\node[scan-frame, below=of frame-g] (frame-h) { h };
+\node[scan-frame, below=of frame-h] (frame-i) { i };
+}{}
+
+\ifthenelse{\step=2}{
+\node[frame, below=of frame-f] (frame-race) { race };
+}{}
+  
+\begin{pgfonlayer}{background}
+\node [stack, fit=(frame-f) (stack-end)] {};
+\end{pgfonlayer}
+
+\end{tikzpicture}

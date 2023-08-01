@@ -1,0 +1,33 @@
+==================
+WARNING: ThreadSanitizer: data race (pid=3808831)
+  Write of size 8 at 0x8febe0 by thread T1 (mutexes: write M90):
+    #0 camlSimple_race.d2_274 simple_race.ml:7 (simple_race.exe+0x420a72)
+    #1 camlDomain.body_706 stdlib/domain.ml:211 (simple_race.exe+0x440f2f)
+    #2 caml_start_program <null> (simple_race.exe+0x47cf37)
+    #3 caml_callback_exn runtime/callback.c:197 (simple_race.exe+0x445f7b)
+    #4 domain_thread_func runtime/domain.c:1167 (simple_race.exe+0x44a113)
+
+  Previous read of size 8 at 0x8febe0 by main thread (mutexes: write M86):
+    #0 camlSimple_race.d1_271 simple_race.ml:4 (simple_race.exe+0x420a22)
+    #1 camlSimple_race.entry simple_race.ml:13 (simple_race.exe+0x420d16)
+    #2 caml_program <null> (simple_race.exe+0x41ffb9)
+    #3 caml_start_program <null> (simple_race.exe+0x47cf37)
+[...]
+
+WARNING: ThreadSanitizer: data race (pid=3808831)
+  Read of size 8 at 0x8febf0 by thread T1 (mutexes: write M90):
+    #0 camlSimple_race.d2_274 simple_race.ml:8 (simple_race.exe+0x420a92)
+    #1 camlDomain.body_706 stdlib/domain.ml:211 (simple_race.exe+0x440f2f)
+    #2 caml_start_program <null> (simple_race.exe+0x47cf37)
+    #3 caml_callback_exn runtime/callback.c:197 (simple_race.exe+0x445f7b)
+    #4 domain_thread_func runtime/domain.c:1167 (simple_race.exe+0x44a113)
+
+  Previous write of size 8 at 0x8febf0 by main thread (mutexes: write M86):
+    #0 camlSimple_race.d1_271 simple_race.ml:3 (simple_race.exe+0x420a01)
+    #1 camlSimple_race.entry simple_race.ml:13 (simple_race.exe+0x420d16)
+    #2 caml_program <null> (simple_race.exe+0x41ffb9)
+    #3 caml_start_program <null> (simple_race.exe+0x47cf37)
+[...]
+
+==================
+ThreadSanitizer: reported 2 warnings

@@ -1,0 +1,161 @@
+@article{blackshearRacerDCompositionalStatic2018a,
+  title = {{{RacerD}}: Compositional Static Race Detection},
+  shorttitle = {{{RacerD}}},
+  author = {Blackshear, Sam and Gorogiannis, Nikos and O'Hearn, Peter W. and Sergey, Ilya},
+  date = {2018},
+  journaltitle = {Proc. ACM Program. Lang.},
+  volume = {2},
+  pages = {144:1--144:28},
+  issue = {OOPSLA},
+  file = {/home/olivier/Zotero/storage/AKGABMRQ/Blackshear et al. - 2018 - RacerD compositional static race detection.pdf}
+}
+
+@software{DscheckToolTesting2023,
+  title = {Dscheck — Tool for Testing Concurrent {{OCaml}} Programs},
+  date = {2023-05-28T09:42:34Z},
+  origdate = {2021-10-28T20:50:54Z},
+  url = {https://github.com/ocaml-multicore/dscheck},
+  urldate = {2023-06-01},
+  abstract = {Experimental model checker for testing concurrent algorithms}
+}
+
+@inproceedings{joshiGoTestRace2016,
+  title = {"go Test -Race" {{Under}} the {{Hood}}},
+  booktitle = {Strange {{Loop}}, {{QCon SF}}},
+  author = {Joshi, Kavya},
+  date = {2016},
+  location = {{San Francisco}},
+  url = {https://www.youtube.com/watch?v=5erqWdlhQLA},
+  abstract = {Writing correct concurrent code is hard. Debugging incorrect concurrent code is even harder. The Go race detector, introduced in Go version 1.1, is one cool tool that makes both easy to do in Go programs. Race conditions are arguably the most elusive programming errors, so how does a tool that detects these across programs operate under the hood? In the case of the Go race detector, with compiler instrumentation of the program and a run-time library that watches for “racy” memory accesses.  This talk will delve into the internals of the data race detector — both the instrumentation by the compiler and the happens-before algorithm implemented by the run-time module to detect data races. We will touch upon how the alternative to such a dynamic data race detector — a static data analyzer — differs in design, and the pros and cons of each approach.}
+}
+
+@book{klabnikRustProgrammingLanguage2019,
+  title = {The {{Rust}} Programming Language},
+  author = {Klabnik, Steve and Nichols, Carol},
+  date = {2019},
+  publisher = {{No Starch Press}},
+  location = {{San Francisco}},
+  langid = {english},
+  pagetotal = {526},
+  file = {/home/olivier/Zotero/storage/49GVGD4E/Klabnik et Nichols - 2019 - The Rust programming language.pdf}
+}
+
+@inproceedings{liEfficientScalableThreadsafetyviolation2019,
+  title = {Efficient Scalable Thread-Safety-Violation Detection: Finding Thousands of Concurrency Bugs during Testing},
+  shorttitle = {Efficient Scalable Thread-Safety-Violation Detection},
+  booktitle = {Proceedings of the 27th {{ACM Symposium}} on {{Operating Systems Principles}} ({{SOSP}} '19)},
+  author = {Li, Guangpu and Lu, Shan and Musuvathi, Madanlal and Nath, Suman and Padhye, Rohan},
+  date = {2019-10-27},
+  pages = {162--180},
+  publisher = {{ACM}},
+  location = {{Huntsville Ontario Canada}},
+  url = {https://dl.acm.org/doi/10.1145/3341301.3359638},
+  abstract = {Concurrency bugs are hard to find, reproduce, and debug. They often escape rigorous in-house testing, but result in large-scale outages in production. Existing concurrency-bug detection techniques unfortunately cannot be part of industry's integrated build and test environment due to some open challenges: how to handle code developed by thousands of engineering teams that uses a wide variety of synchronization mechanisms, how to report little/no false positives, and how to avoid excessive testing resource consumption. This paper presents TSVD, a thread-safety violation detector that addresses these challenges through a new design point in the domain of active testing. Unlike previous techniques that inject delays randomly or employ expensive synchronization analysis, TSVD uses lightweight monitoring of the calling behaviors of thread-unsafe methods, not any synchronization operations, to dynamically identify bug suspects. It then injects corresponding delays to drive the program towards thread-unsafe behaviors, actively learns from its ability or inability to do so, and persists its learning from one test run to the next. TSVD is deployed and regularly used in Microsoft and it has already found over 1000 thread-safety violations from thousands of projects. It detects more bugs than state-of-the-art techniques, mostly with just one test run.},
+  eventtitle = {{{SOSP}} '19: {{ACM SIGOPS}} 27th {{Symposium}} on {{Operating Systems Principles}}},
+  langid = {english}
+}
+
+@inproceedings{midtgaardMulticoretestsParallelTesting2022,
+  title = {Multicoretests – {{Parallel Testing Libraries}} for {{OCaml}} 5.0},
+  booktitle = {{{OCaml Users}} and {{Developers Workshop}} 2022},
+  author = {Midtgaard, Jan and Nicole, Olivier and Osborne, Nicolas},
+  date = {2022}
+}
+
+@inproceedings{musuvathiSystematicConcurrencyTesting2008,
+  title = {Systematic Concurrency Testing Using {{CHESS}}},
+  booktitle = {Proceedings of the 6th Workshop on {{Parallel}} and Distributed Systems: Testing, Analysis, and Debugging ({{ISSTA}} '08)},
+  author = {Musuvathi, Madan},
+  date = {2008-07-20},
+  pages = {1--1},
+  publisher = {{ACM}},
+  location = {{Seattle Washington}},
+  url = {https://dl.acm.org/doi/10.1145/1390841.1390851},
+  abstract = {Concurrency testing should aim for systematic coverage of thread interleavings. The most common method used today is stress testing, where the program is run under load with lots of threads. While this indirectly increases the variety of thread interleavings, the coverage is neither sufficient and nor predictable---stories are legend of the so-called "Heisenbugs" that rarely surface during testing and are very hard to debug.  In this talk, I will argue for a new notion of concurrency testing called scenario testing and describe CHESS, a tool we have developed towards that end. A user of CHESS provides simple concurrency scenarios and CHESS systematically enumerates all thread interleavings of these scenarios. CHESS employs model checking techniques to effectively focus on potentially bug-yielding schedules and provides sound quantifiable notions of coverage. On finding an error, CHESS has the capability to replay the erroneous interleaving, greatly simplifying the debugging process. CHESS has been successfully integrated with several codebases inside Microsoft and is used daily by the test teams. CHESS has found numerous bugs in systems that have been stress-tested for months. Additionally, CHESS has successfully reproduced many stress-test crashes that were previously hard to debug. The latter shows that many bugs that are found in stress-testing can indeed be reproduced in simple scenarios, a good validation for scenario testing.  CHESS is available for download at http://research.microsoft.com/CHESS. The talk will contain enough material to act as a tutorial for first-time users. I will also describe the challenges in applying CHESS to a new codebase and how to address them.},
+  langid = {english}
+}
+
+@inproceedings{naikEffectiveStaticRace2006,
+  title = {Effective Static Race Detection for {{Java}}},
+  booktitle = {Proceedings of the 27th {{ACM SIGPLAN Conference}} on {{Programming Language Design}} and {{Implementation}} ({{PLDI}} '06)},
+  author = {Naik, Mayur and Aiken, Alex and Whaley, John},
+  date = {2006-06-11},
+  pages = {308--319},
+  publisher = {{ACM}},
+  location = {{Ottawa, Ontario, Canada}},
+  url = {https://dl.acm.org/doi/10.1145/1133981.1134018},
+  abstract = {We present a novel technique for static race detection in Java programs, comprised of a series of stages that employ a combination of static analyses to successively reduce the pairs of memory accesses potentially involved in a race. We have implemented our technique and applied it to a suite of multi-threaded Java programs. Our experiments show that it is precise, scalable, and useful, reporting tens to hundreds of serious and previously unknown concurrency bugs in large, widely-used programs with few false alarms.},
+  langid = {english}
+}
+
+@online{nicoleAddThreadSanitizerSupport2023,
+  title = {Add {{ThreadSanitizer}} Support},
+  author = {Nicole, Olivier and Buoro, Fabrice},
+  date = {2023-03-16},
+  url = {https://github.com/ocaml/ocaml/pull/12114},
+  organization = {{The OCaml compiler repository}}
+}
+
+@inproceedings{padhiyarParafuzzCoverageguidedProperty2021,
+  title = {Parafuzz: {{Coverage-guided Property Fuzzing}} for {{Multicore OCaml}} Programs},
+  author = {Padhiyar, Sumit and Kamath, Adharsh and family=Sivaramakrishnan, given=KC, given-i=KC},
+  date = {2021},
+  eventtitle = {{{OCaml Users}} and {{Developers Workshop}} 2021}
+}
+
+@software{SaturnLockfreeData2023,
+  title = {Saturn — {{Lock-free}} Data Structures for Multicore {{OCaml}}},
+  date = {2023-05-30T03:44:50Z},
+  origdate = {2016-12-06T16:55:59Z},
+  url = {https://github.com/ocaml-multicore/saturn},
+  urldate = {2023-06-01},
+  abstract = {Lock-free data structures for multicore OCaml},
+  organization = {{Multicore OCaml}}
+}
+
+@inproceedings{senRaceDirectedRandom2008,
+  title = {Race Directed Random Testing of Concurrent Programs},
+  booktitle = {Proceedings of the 29th {{ACM SIGPLAN Conference}} on {{Programming Language Design}} and {{Implementation}} ({{PLDI}} '08)},
+  author = {Sen, Koushik},
+  date = {2008-06-07},
+  pages = {11--21},
+  publisher = {{ACM}},
+  location = {{Tucson AZ USA}},
+  url = {https://dl.acm.org/doi/10.1145/1375581.1375584},
+  abstract = {Bugs in multi-threaded programs often arise due to data races. Numerous static and dynamic program analysis techniques have been proposed to detect data races. We propose a novel randomized dynamic analysis technique that utilizes potential data race information obtained from an existing analysis tool to separate real races from false races without any need for manual inspection. Specifically, we use potential data race information obtained from an existing dynamic analysis technique to control a random scheduler of threads so that real race conditions get created with very high probability and those races get resolved randomly at runtime. Our approach has several advantages over existing dynamic analysis tools. First, we can create a real race condition and resolve the race randomly to see if an error can occur due to the race. Second, we can replay a race revealing execution efficiently by simply using the same seed for random number generation--we do not need to record the execution. Third, our approach has very low overhead compared to other precise dynamic race detection techniques because we only track all synchronization operations and a single pair of memory access statements that are reported to be in a potential race by an existing analysis. We have implemented the technique in a prototype tool for Java and have experimented on a number of large multi-threaded Java programs. We report a number of previously known and unknown bugs and real races in these Java programs.},
+  langid = {english}
+}
+
+@inproceedings{serebryanyDynamicRaceDetection2011,
+  title = {Dynamic {{Race Detection}} with {{LLVM Compiler}} - {{Compile-Time Instrumentation}} for {{ThreadSanitizer}}},
+  booktitle = {Runtime {{Verification}} - {{Second International Conference}} ({{RV}} '11)},
+  author = {Serebryany, Konstantin and Potapenko, Alexander and Iskhodzhanov, Timur and Vyukov, Dmitriy},
+  editor = {Khurshid, Sarfraz and Sen, Koushik},
+  date = {2011},
+  series = {Lecture {{Notes}} in {{Computer Science}}},
+  volume = {7186},
+  pages = {110--114},
+  publisher = {{Springer}},
+  url = {https://doi.org/10.1007/978-3-642-29860-8\_9}
+}
+
+@inproceedings{sivaramakrishnanRetrofittingEffectHandlers2021a,
+  title = {Retrofitting Effect Handlers onto {{OCaml}}},
+  booktitle = {{{PLDI}} '21: 42nd {{ACM SIGPLAN International Conference}} on {{Programming Language Design}} and {{Implementation}}, {{Virtual Event}}, {{Canada}}, {{June}} 20-25, 2021},
+  author = {Sivaramakrishnan, K. C. and Dolan, Stephen and White, Leo and Kelly, Tom and Jaffer, Sadiq and Madhavapeddy, Anil},
+  editor = {Freund, Stephen N. and Yahav, Eran},
+  date = {2021},
+  pages = {206--221},
+  publisher = {{ACM}},
+  file = {/home/olivier/Zotero/storage/XWQESMIG/Sivaramakrishnan et al. - 2021 - Retrofitting effect handlers onto OCaml.pdf}
+}
+
+@inproceedings{smaragdakisSoundPredictiveRace2012,
+  title = {Sound Predictive Race Detection in Polynomial Time},
+  booktitle = {Proceedings of the 39th {{ACM SIGPLAN-SIGACT Symposium}} on {{Principles}} of {{Programming Languages}} ({{POPL}} '12)},
+  author = {Smaragdakis, Yannis and Evans, Jacob and Sadowski, Caitlin and Yi, Jaeheon and Flanagan, Cormac},
+  editor = {Field, John and Hicks, Michael},
+  date = {2012},
+  pages = {387--400},
+  publisher = {{ACM}}
+}

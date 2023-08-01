@@ -1,0 +1,139 @@
+\setminted{highlightcolor=yellow!33,breaklines,fontsize=\footnotesize,baselinestretch=0.8}
+\setminted[lisp]{stripall=true}
+\setminted[objdump]{tabsize=2}
+
+% Commands
+\newcommand\mintocaml[2][]{%
+\expandafter\inputminted\expandafter[#1]{ocaml}{\detokenize{#2}}%
+}
+\newcommand\mintobjdump[2][]{%
+\expandafter\inputminted\expandafter[#1]{objdump}{\detokenize{#2}}%
+}
+\newcommand\mintcmm[2][]{%
+\expandafter\inputminted\expandafter[#1]{lisp}{\detokenize{#2}}%
+}
+\newcommand\mintlinear[2][]{%
+\expandafter\inputminted\expandafter[#1]{text}{\detokenize{#2}}%
+}
+\newcommand\mintc[2][]{%
+\expandafter\inputminted\expandafter[#1]{c}{\detokenize{#2}}%
+}
+\newcommand\mintcpp[2][]{%
+\expandafter\inputminted\expandafter[#1]{cpp}{\detokenize{#2}}%
+}
+\newcommand\mintasm[2][]{%
+\expandafter\inputminted\expandafter[#1]{gas}{\detokenize{#2}}%
+}
+\newcommand\minttxt[2][]{%
+\expandafter\inputminted\expandafter[#1]{text}{\detokenize{#2}}%
+}
+
+\newcommand\listlang[4][]{%
+% #2 -> language
+% #3 -> source file
+% #4 -> caption
+\begin{listing}
+#2[#1]{#3}
+\caption{#4}
+\end{listing}%
+}
+
+\newcommand\listocaml[3][]{%
+% #2 -> source file
+% #3 -> caption
+\listlang[#1]{\mintocaml}{#2}{#3}%
+}
+
+\newcommand\listobjdump[3][]{%
+% #2 -> source file
+% #3 -> caption
+\listlang[#1]{\mintobjdump}{#2}{#3}%
+}
+
+\newcommand\listcmm[3][]{%
+% #2 -> source file
+% #3 -> caption
+\listlang[#1]{\mintcmm}{#2}{#3}%
+}
+
+\newcommand\listlinear[3][]{%
+% #2 -> source file
+% #3 -> caption
+\listlang[#1]{\mintlinear}{#2}{#3}%
+}
+
+\newcommand\listc[3][]{%
+% #2 -> source file
+% #3 -> caption
+\listlang[#1]{\mintc}{#2}{#3}%
+}
+
+\newcommand\listasm[3][]{%
+% #2 -> source file
+% #3 -> caption
+\listlang[#1]{\mintasm}{#2}{#3}%
+}
+
+
+%\addtobeamertemplate{block alerted begin}{%
+%    \setlength{\textwidth}{0.8\textwidth}
+%}{}
+%
+%\addtobeamertemplate{block example begin}{%
+%    \setlength{\textwidth}{0.8\textwidth}
+%}{}
+
+\colorlet{FancyVerbHighlightColor}{blue}
+
+\newcommand{\redwrong}{{\color{red}\faTimes}}
+\newcommand{\greencheck}{{\color{green!50!black}\faCheck}}
+\newcommand{\ballotBox}{\faSquareO}
+\newcommand{\checkedBallotBox}{\faCheckSquareO}
+\newcommand{\consequence}{\color{red}{\rotatebox[origin=c]{180}{\faReply}}}
+
+
+\lstset{
+  basicstyle=\ttfamily\scriptsize,
+  columns=fullflexible,
+  captionpos=b,                    % sets the caption-position to bottom
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+%  frame=single,	                   % adds a frame around the code
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+% language=C,                 % the language of the code
+%  numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+%  numbersep=5pt,                   % how far the line-numbers are from the code
+%  numberstyle=\scriptsize\color{darkgray}, % the style that is used for the line-numbers
+%  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  mathescape=true,
+  literate={->}{$\to$}{1},
+}
+
+\definecolor{blueish}{HTML}{214c95}
+\definecolor{orangeish}{HTML}{d6772b}
+
+\newcommand\lstsetOCaml{
+  \lstset{
+    language=[Objective]Caml,
+    keywordstyle=\color{blueish},
+    commentstyle=\color{orangeish},
+    }
+}
+
+\newcommand\lstsetNone{
+  \lstset{language=,}
+}
+
+\definecolor{mComplA}{HTML}{384E94}
+\definecolor{mComplB}{HTML}{944B38}
+
+\newcommand\emphA[1]{%
+  \textcolor{mComplA}{\textbf{#1}}%
+}
+
+\newcommand\emphB[1]{%
+  \textcolor{mComplB}{\textbf{#1}}%
+}
+
+\newcommand\hruleA{%
+  \color{mComplA}{\rule[1em]{\textwidth}{0.1pt}}%
+}

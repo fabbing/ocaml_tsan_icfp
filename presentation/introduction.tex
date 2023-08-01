@@ -1,0 +1,108 @@
+\begin{frame}{Goal of this talk}
+  \begin{itemize}
+    \item What is ThreadSanitizer (TSan) and how is it useful?
+    \item What is required to integrate TSan to OCaml programs?
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Finally, we can have data races too}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      A \emphA{data race} is a race condition defined by:
+      \begin{itemize}
+        \item Two accesses are made to the same memory location\,
+        \item At least one of them is a write, and
+        \item No order is enforced between them.
+      \end{itemize}
+      \medskip
+      \begin{footnotesize}
+      Event ordering is formalized in terms of a partial order called \emphB{happens-before}. It is defined by the OCaml 5 memory model.\\
+      \end{footnotesize}
+      \medskip
+      Data races are:
+      \begin{itemize}
+        \item Hard to detect (possibly silent)
+        \item Hard to track down
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[trim=800 0 150 0, clip, width=1\textwidth]{pictures/camel\_racing.jpg}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Data race example}
+  \begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+      \mintocaml[firstline=1,lastline=15]{src/simple\_race\_on\_the\_slide.ml}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \flushright
+      \visible<2->{%
+        \input{diagrams/data-race.tex}%
+      }
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{ThreadSanitizer (TSan)}
+  \begin{itemize}
+    \item \emphA{Runtime} data race detector (dynamic analysis, not static!)
+    \item Initially developed for C++ by Google, now supported in
+      \begin{footnotesize}
+        \begin{itemize}
+          \item C, C++ with GCC and clang
+          \item Go
+          \item Swift
+        \end{itemize}
+      \end{footnotesize}
+    \item Battle-tested, already found\footnote[frame]{Numbers August 2015}
+      \begin{footnotesize}
+        \begin{itemize}
+          \item 1200+ races in Google’s codebase
+          \item ~100 in the Go stdlib
+          \item 100+ in Chromium
+          \item LLVM, GCC, OpenSSL, WebRTC, Firefox
+        \end{itemize}
+      \end{footnotesize}
+      \bigskip
+    \item Requires to compile your program specially
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{}
+  \vspace{6pt}
+  \begin{columns}[c]
+    \begin{column}{0.4\textwidth}
+      \alt<4>{%
+        \mintocaml[firstline=1,lastline=15,highlightlines={4, 9}]{src/simple\_race\_on\_the\_slide.ml}
+      }{%
+        \mintocaml[firstline=1,lastline=15]{src/simple\_race\_on\_the\_slide.ml}
+      }%
+    \end{column}
+    \begin{column}{0.67\textwidth}
+      \visible<2-4>{%
+        \temporal<3>{%
+          \minttxt[firstline=2,breaklines=false,fontsize=\fontsize{5.8pt}{6.2pt}\selectfont,frame=single]{src/tsan\_output.txt}%
+        }{%
+          \minttxt[highlightlines={2, 17},firstline=2,breaklines=false,fontsize=\fontsize{5.8pt}{6.2pt}\selectfont,frame=single]{src/tsan\_output.txt}%
+        }{%
+          \minttxt[highlightlines={4, 11},firstline=2,breaklines=false,fontsize=\fontsize{5.8pt}{6.2pt}\selectfont,frame=single]{src/tsan\_output.txt}%
+        }%
+      }%
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{}
+  \begin{columns}
+    \begin{column}{0.3\textwidth}
+      \mintocaml[firstline=4,lastline=16]{src/simple\_race\_mutex.ml}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%% Outline frame
+%\begin{frame}{Outline}
+%  \tableofcontents
+%\end{frame}

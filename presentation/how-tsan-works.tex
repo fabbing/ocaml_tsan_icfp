@@ -1,0 +1,142 @@
+\begin{frame}{Two components}
+  \begin{columns}
+    \begin{column}{0.1\textwidth}
+
+    \end{column}
+    \begin{column}{0.33\textwidth}
+      \emphA{Program instrumentation}
+      \begin{equation*}
+        \left.
+        \begin{minipage}[c]{3.5cm}
+          \begin{itemize}
+            \item Memory accesses
+            \item Thread spawning and joining
+            \item Mutex locks and unlocks, \dots
+          \end{itemize}
+        \end{minipage}
+        \quad\right\}
+      \end{equation*}
+    \end{column}
+    \begin{column}{0.25\textwidth}
+      \phantom{invisible text}
+
+      \smallskip
+        $\xrightarrow{\hspace{0.3\textwidth}\text{\normalsize\textbf{call}}\hspace{0.3\textwidth}}$
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \phantom{invisible text}
+
+      \medskip
+      \emphA{Runtime library}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\newcommand\stateMachineDiagram[1]{
+  \providecommand\step{#1}\input{diagrams/state-machine.tex}
+}
+
+\begin{frame}{Race detector state machine}
+  \centering
+  \only<1>{\stateMachineDiagram{2}}
+  \only<2>{\stateMachineDiagram{3}}
+  \only<3>{\stateMachineDiagram{4}}
+\end{frame}
+
+\begin{frame}{}
+  \begin{columns}
+    \begin{column}{0.3\textwidth}
+      \mintocaml[firstline=4,lastline=16]{src/simple\_race\_mutex.ml}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{TSan’s internal state}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item Each thread holds a \emphA{vector clock} (array of N clocks, N = number of threads)
+        \item<2-> Each thread increments its clock upon every \emphA{event} (memory access, mutex operation…)
+        \item<4-> Some operations (e.g. mutex locks, atomic reads) synchronize clocks between threads
+      \end{itemize}
+      \visible<4->{%
+        \bigskip
+        \textbf{Comparing vector clocks allows to establish \emphB{happens-before} relations.}%
+      }
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \centering
+      \input{diagrams/vector-clocks.tex} % TODO: animate?
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Shadow state}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item Stores information about memory accesses.
+        \item 8-byte shadow word for an access:
+          {\footnotesize
+          \begin{center}
+            \begin{tabular}{|c|c|c|c|}
+              \hline
+              TID & clock & pos & w \\
+              \hline
+            \end{tabular}
+          \end{center}
+            \begin{itemize}
+              \footnotesize
+              \item \textbf{TID}: accessor thread ID
+              \item \textbf{clock}: scalar clock of accessor, \\ \quad optimized vector clock
+              \item \textbf{pos}: offset, size
+              \item \textbf{w}: is write
+            \end{itemize}%
+          }
+        \item If shadow words are filled, evict one at random
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \input{diagrams/shadow-state.tex}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Race detection}
+  \begin{columns}
+    \begin{column}{0.6\textwidth}
+      Upon memory access, compare: \\
+      \emphA{accessor’s clock} with \emphA{each existing shadow word}
+    \newcommand{\itemOne}{do the accesses overlap?}
+    \newcommand{\itemTwo}{is one of them a write?}
+    \newcommand{\itemThree}{are the thread IDs different?}
+    \newcommand{\itemFour}{are they unordered by happens-before?}
+      \begin{itemize}
+        \onslide*<1>{\item[\ballotBox] \itemOne}
+        \onslide*<2->{\item[\checkedBallotBox] \itemOne}
+        \onslide*<1-2>{\item[\ballotBox] \itemTwo}
+        \onslide*<3->{\item[\checkedBallotBox] \itemTwo}
+        \onslide*<1-3>{\item[\ballotBox] \itemThree}
+        \onslide*<4->{\item[\checkedBallotBox] \itemThree}
+        \onslide*<1-4>{\item[\ballotBox] \itemFour}
+        \onslide*<5->{\item[\checkedBallotBox] \itemFour}
+      \end{itemize}
+      \onslide<6->{\center \consequence{} RACE}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \onslide*<7->{
+        \framebox{
+          \parbox{\textwidth}{
+            \begin{footnotesize}
+              \emphA{Limitations}
+              \begin{itemize}
+                \item Runtime analysis: data races are only detected on visited code paths
+                \item Finite number of memory accesses remembered
+              \end{itemize}
+            \end{footnotesize}
+          }
+        }
+      }
+    \end{column}
+  \end{columns}
+\end{frame}

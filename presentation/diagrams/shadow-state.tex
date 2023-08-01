@@ -1,0 +1,29 @@
+\begin{tikzpicture}[
+  on grid,
+  node distance=20mm,
+  %
+  scale=0.8, every node/.append style={transform shape},
+  %
+  base/.style={color=mDarkTeal, thick},
+  %
+  cell/.style={base, draw, rectangle, minimum width=50mm, minimum height=20mm, inner sep=0, text width=45mm, align=left},
+  address/.style={font=\ttfamily\scriptsize, color=black!60},
+  %
+  arrow/.style={base, ->, >=stealth, shorten <=2mm, shorten >=2mm}
+]
+  \node [cell, fill=RoyalBlue!40]
+    [label={[address, anchor=north east]north east:0x7fffffff}]
+    [label={[address, anchor=south east]south east:0x7f000000}]
+    (cell1) { application };
+
+  \node [cell, below=of cell1] (cell2) {};
+
+  \node [cell, below=of cell2, fill=YellowOrange!20]
+    [label={[address, anchor=north east]north east:0x1ffffffff}]
+    [label={[address, anchor=south east]south east:0x180000000}]
+    (cell3) { shadow };
+
+  \node [cell, below=of cell3] (cell4) {};
+
+  \draw [arrow, bend right=75] (cell1.west) to (cell3.west);
+\end{tikzpicture}

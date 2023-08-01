@@ -1,0 +1,46 @@
+\definecolor{mDarkTeal}{HTML}{23373b}
+
+\begin{tikzpicture} [
+font=\sffamily,
+on grid, node distance=1,
+%
+scale=1, every node/.append style={transform shape},
+%
+base/.style={draw, minimum height=15, minimum width=40, inner sep=5, color=mDarkTeal, thick},
+%
+rectangular/.style={base, rectangle, rounded corners=2},
+%
+program/.style={rectangular, rounded corners=5, minimum width=80, minimum height=20, rotate=-90, fill=black!3},
+%
+normal-state/.style={rectangular, fill=black!3},
+error-state/.style={rectangular, fill=RedOrange!50, draw=RedOrange},
+%
+line/.style={thick},
+arrow/.style={line, ->, >=stealth},
+short-arrow/.style={arrow, shorten <=2, shorten >=2}
+]
+
+
+\node [program] (program) { program };
+\draw [line] (program.west) to ++(0,1);
+\draw [arrow] (program.east) to ++(0,-2);
+
+
+\node [normal-state] (state1) at (4,2) { state };
+\node<2-> [normal-state] (state2) [below=2 of state1] {  };
+\node<3-> [error-state] (state3) [below=2 of state2] {  };
+
+
+\draw<2-> [short-arrow,color=ForestGreen] (state1) -- (state2);
+\draw<3-> [short-arrow,color=RedOrange] (state2.east) to [bend left=90] node [midway, right] (race) { race } (state3.east);
+
+
+\node [color=gray] (race-detector) at (6,-2.5) {race detector};
+\node [draw, rectangular, color=mDarkTeal, fit=(state1) (race-detector), inner sep=8] {};
+
+
+\draw<1-> [arrow,<-] ([shift={(-0.5,0)}]state1.west) to node [midway, above] { spawn } ++(-2,0);
+\draw<2-> [arrow,<-] ([shift={(-0.5,0)}]state2.west) to node [midway, above] { lock } ++(-2,0);
+\draw<3-> [arrow,<-] ([shift={(-0.5,0)}]state3.west) to node [midway, above] { read } ++(-2,0);
+
+\end{tikzpicture}

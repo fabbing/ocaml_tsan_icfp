@@ -1,0 +1,16 @@
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.nav
+*.out
+presentation.pdf
+*.snm
+*.synctex.gz
+*.toc
+*.vrb
+presentation/_minted-presentation
+*.xdv
+presentation/src/*.cm[iox]
+presentation/src/*.exe
+presentation/src/*.o

@@ -1,0 +1,61 @@
+\begin{frame}{Current status}
+  \begin{itemize}
+    \item Performance cost: about 2-7x slowdown (compared to 5-15x for C/C++)
+    \item Memory consumption is increased by 4-7x (compared to 5-10x for C/C++)
+    \item Only supported on 64 bits, non-Windows (TSan limitations), only x86_64 for now
+  \end{itemize}
+\end{frame}
+
+
+\setbeamertemplate{footline}{}
+
+\begin{frame}[fragile]{Conclusion}
+  \begin{itemize}
+    \item Merged in trunk, will be released with OCaml 5.2
+    \item For convenience, there is a backport on OCaml 5.1 (currently rc3):
+      \begin{columns}
+        \begin{column}{0.5\textwidth}
+          \lstset{basicstyle=\ttfamily\small}
+          \begin{lstlisting}
+sudo apt install libunwind-dev
+opam switch create 5.1.0~rc3+tsan
+          \end{lstlisting}
+        \end{column}
+      \end{columns}
+      \vspace*{-7pt}
+    \item We have used TSan to find races in
+      \begin{itemize}
+        \item Lockfree:
+          \href{https://github.com/ocaml-multicore/lockfree/pull/40}{ocaml-multicore/lockfree\#40},
+          \href{https://github.com/ocaml-multicore/lockfree/issues/39}{ocaml-multicore/lockfree\#39}
+        \item Domainslib:
+          \href{https://github.com/ocaml-multicore/domainslib/issues/72}{ocaml-multicore/domainslib\#72},
+          \href{https://github.com/ocaml-multicore/domainslib/pull/103}{ocaml-multicore/domainslib\#103}
+        \item The OCaml runtime:
+          \href{https://github.com/ocaml/ocaml/issues/11040}{ocaml/ocaml\#11040}
+      \end{itemize}
+    \item TSan has also been helpful to Irmin and Eio
+    \item User feedback welcome
+  \end{itemize}
+  \vspace{5pt}
+  \begin{beamercolorbox}[wd=\paperwidth, ht=11ex, dp=2ex, leftskip=2ex, rightskip=2ex]{block title}%
+    \hspace{-0.5em}%
+    \begin{minipage}[b]{0.95\paperwidth}%
+    \footnotesize\normalfont%
+    \textbf{Acknowledgements}
+    %\vspace{1em}\\
+    \begin{itemize}[noitemsep]
+      \item Thanks to Anmol Sahoo, Jacques-Henri Jourdan, Luc Maranget, Guillaume Munch-Maccagnoni, and to the reviewers of the TSan PR
+      \item The first slides contain some information and diagrams from the great talk \href{https://www.youtube.com/watch?v=5erqWdlhQLA}{\emph{``go test -race'' Under the Hood} by Kavya Joshi at Strange Loop 2016}
+    \end{itemize}
+  \end{minipage}
+  \end{beamercolorbox}%
+  \begin{tikzpicture}[overlay]
+    \node<2>[xshift=-5cm,yshift=3.1cm] at (current page.south east) { \Large
+        \emphB{Thanks!} };
+  \end{tikzpicture}
+\end{frame}
+
+%\begin{frame}[standout]
+%  {\huge Q \& A}
+%\end{frame}

@@ -1,0 +1,263 @@
+\begin{frame}[fragile]{Instrumentation of memory accesses}
+  \begin{minted}{ocaml}
+let d1 () =
+  a := 1;
+  !b
+  \end{minted}
+  \par\noindent\rule{\textwidth}{0.4pt}
+  \begin{columns}[T]
+    \begin{column}{0.45\textwidth}
+      %\mintcmm[highlightlines={3, 7}]{src/instrumentation_example0.cmm}
+      \begin{minted}[highlightlines={3, 6},escapeinside=||]{lisp}
+(function d1 (param)
+
+|\xglobal\colorlet{FancyVerbHighlightColor}{red}| (store a 1)
+
+
+ (load_mut b))
+      \end{minted}
+    \end{column}
+    \begin{column}{0.55\textwidth}
+      \begin{overprint}
+        \onslide<2>
+      \begin{minted}[highlightlines={2-3, 5-8}]{lisp}
+(function d1 (param)
+ (extcall "__tsan_write8" a)
+ (store a 1)
+
+ (extcall "__tsan_read8" b)
+ (load_mut b))
+      \end{minted}
+      \end{overprint}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+\begin{frame}[fragile]{Function entries and exits}
+  Recall: TSan gives the backtrace of \textbf{both} conflicting accesses
+  \bigskip
+  \lstsetNone
+  \lstset{frame=single,backgroundcolor=\color{black!6}}
+  \begin{lstlisting}
+==================
+WARNING: ThreadSanitizer: data race (pid=3080294)
+  Write of size 8 at 0x7f70feffebe0 by thread T1 (mutexes: write M90):
+    #0 camlSimple_race.d2_274 simple_race.ml:7 (simple_race.exe+0x420a72)
+    #1 camlStdlib__Domain.body_706 stdlib/domain.ml:211 (simple_race.exe+0x44119f)
+    #2 caml_start_program <null> (simple_race.exe+0x47d1a7)
+    #3 caml_callback_exn runtime/callback.c:197 (simple_race.exe+0x4461eb)
+    #4 domain_thread_func runtime/domain.c:1167 (simple_race.exe+0x44a383)
+
+  %*\begin{tikzpicture}[remember picture,overlay] \node (marker0) {}; \end{tikzpicture}*)Previous read%*\begin{tikzpicture}[remember picture,overlay] \node (marker1) {}; \end{tikzpicture}*) of size 8 at 0x7f70feffebe0 by main thread (mutexes: write M86):
+    #0 camlSimple_race.main_277 simple_race.ml:13 (simple_race.exe+0x420b36)
+    #1 camlSimple_race.entry simple_race.ml:34 (simple_race.exe+0x420fcf)
+    #2 caml_program <null> (simple_race.exe+0x41ffb9)
+    #3 caml_start_program <null> (simple_race.exe+0x47d1a7)
+[...]\end{lstlisting}
+  %
+  \begin{tikzpicture}[remember picture,overlay]
+    %\draw[rectangle,minimum height=10pt,fit=(marker0) (marker1),color=red];
+    %\draw[color=red] (marker0) to[bend left=90] (marker1);
+    %\draw[color=red] (marker1) to[bend left=90] (marker0);
+    \node[draw,fit=(marker0) (marker1),color=red,yshift=2pt,rounded
+      corners=5pt,ultra thick] {};
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Function entries and exits}
+  \begin{minted}{ocaml}
+let d1 () =
+  a := 1;
+  !b
+  \end{minted}
+  \vspace{-15pt}%
+  \par\noindent\rule{\textwidth}{0.4pt}
+  \vspace{-15pt}%
+  \begin{columns}[T]
+    \begin{column}{0.45\textwidth}
+      \begin{minted}[highlightlines={2, 7}]{lisp}
+(function d1 (param)
+
+ (extcall "__tsan_write8" a)
+ (store a 1)
+
+ (extcall "__tsan_read8" b)
+ (load_mut b))
+      \end{minted}
+    \end{column}
+    \begin{column}{0.55\textwidth}
+      \begin{overprint}
+      \onslide<2>
+      \begin{minted}[highlightlines={2, 7-9}]{lisp}
+(function d1 (param)
+ (extcall "__tsan_func_entry" return_addr)
+ (extcall "__tsan_write8" a)
+ (store a 1)
+
+ (extcall "__tsan_read8" b)
+ (let res (load_mut b)
+   (extcall "__tsan_func_exit")
+   res))
+      \end{minted}
+      \end{overprint}
+    \end{column}
+  \end{columns}
+
+  \small
+  \begin{itemize}
+    \item To be able to show \emphA{backtraces} of past program points, TSan requires us to \emphA{instrument} \emphA{function entries} and \emphA{exits}
+    \item Tail calls must be handled with care
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{A first challenge: exceptions}
+  \begin{itemize}
+    \item In C, it is easy to instrument function entries and exits
+    \item C++ has to take care of exceptions
+    \item OCaml has exceptions too:
+      \begin{itemize}
+        \item Any function can be exited due to an exception
+        \item Unlike in C++, exceptions do not unwind the
+          stack\footnote[frame]{Fabrice Buoro,
+          \href{https://github.com/fabbing/obts_exn}{``OCaml behind the scenes:
+        exceptions''}}
+      \end{itemize}
+  \end{itemize}
+
+  \begin{itemize}
+    \item TSan's linear view of the call stack does not hold
+  \end{itemize}
+\end{frame}
+
+
+\newcommand\exnDiagram[1]{%
+  \providecommand\step{#1}\input{diagrams/exception.tex}%
+}
+
+\begin{frame}[fragile]{A first challenge: exceptions}
+  \begin{columns}[T]
+    \begin{column}{0.6\textwidth}
+%      \minipage[c][0.66\textheight][s]{\columnwidth}
+      \lstsetOCaml
+      \begin{lstlisting}
+let race () = (* ... *)
+
+let i () = raise Exit%*\begin{tikzpicture}[remember picture,overlay] \coordinate (src-i); \end{tikzpicture}*)
+let h () = i ()
+let g () = h ()
+let f () =
+  try g () with | Exit -> race ()%*\begin{tikzpicture}[remember picture,overlay] \coordinate (src-handler); \end{tikzpicture}*)
+      \end{lstlisting}
+      \onslide*<1,3>{
+        \begin{tikzpicture}[remember picture,overlay]
+          \coordinate [shift={(5pt,2pt)}] (start) at (src-i);
+          \draw [<-,>=stealth,color=mLightBrown,thick] (start) -- ++(6mm,0);
+        \end{tikzpicture}
+      }
+      \onslide*<2>{
+        \begin{tikzpicture}[remember picture,overlay]
+          \coordinate [shift={(5pt,2pt)}] (start) at (src-handler);
+          \draw[<-,>=stealth,color=mLightBrown,thick] (start) -- ++(6mm,0);
+        \end{tikzpicture}
+      }
+      \medskip
+      \begin{itemize}
+        \item[>>] TSan backtrace:
+          \begin{itemize}
+              \onslide*<2,4>{
+              \item[-] race
+              }
+              \onslide*<1>{
+              \item[-] i
+              \item[-] h
+              \item[-] g
+              }
+              \onslide*<2>{
+              \item[-] \textcolor{mLightBrown}{i}
+              \item[-] \textcolor{mLightBrown}{h}
+              \item[-] \textcolor{mLightBrown}{g}
+              }
+            \item[-] f
+          \end{itemize}
+      \end{itemize}
+%      \end{minipage}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \centering
+      \only<1>{\exnDiagram{1}}%
+      \only<2>{\exnDiagram{2}}%
+      \only<3>{\exnDiagram{3}}%
+      \only<4>{\exnDiagram{2}}%
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+\begin{frame}{A new challenger has arrived: Effect handlers}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item Effect handlers are a \emphA{generalisation of exceptions}: \emphA{perform}-ing an effect jumps to the associated effect handler, and additionally, a delimited continuation makes it possible to \emphA{resume} a computation
+          \footnote[frame]{\href{https://arxiv.org/pdf/2104.00250.pdf}{KC Sivaramakrishnan et al, Retrofitting Effect Handlers onto OCaml, PLDI 2021}}
+        \item As with exceptions, we must signal to TSan the frames that are \emphA{exited} when an effect is \emphA{performed}, and \emphA{re-entered} when a continuation is \emphA{resumed}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \mintocaml{src/effects.ml}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+\begin{frame}{Final boss: The OCaml memory model}
+  \begin{itemize}
+    \item TSan can detect data races in programs following the C11 memory model
+    \item OCaml's memory model\footnote[frame]{\href{https://kcsrk.info/papers/pldi18-memory.pdf}{Dolan et al., \emph{Bounding Data Races In Space and Time}, PLDI 2018}} is different from the C11 one
+      \begin{itemize}
+        \item It offers more guarantees, such as \emphA{Local Data Race Freedom implies Sequential Consistency} (LDRF-SC)
+      \end{itemize}
+    \item To enforce the OCaml memory model, some operations are implemented particularly, and special instructions are inserted in the code
+      \begin{itemize}
+        \item \emphA{Bounding data race in space and time} (LDRF-SC) requires fences at strategic positions
+        \item OCaml's runtime, written in C, use strong instructions to prevent \emphB{Undefined Behavior} at C level
+      \end{itemize}
+    %\item This also prevents TSan to detect some data races (their scope is limited but they are still data races!)
+    %\item So we don't always let know of all operations, or all operations details, so TSan can detect race in OCaml Memory Model
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Final boss: The OCaml memory model}
+  \begin{columns}
+    \begin{column}{0.45\textwidth}
+      \emphA{OCaml}
+      \color{mComplA}{\rule[1em]{\textwidth}{0.1pt}}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \emphA{C analogous}
+      \color{mComplA}{\rule[1em]{\textwidth}{0.1pt}}
+    \end{column}
+  \end{columns}
+  \medskip
+  \begin{columns}
+    \begin{column}{0.45\textwidth}
+      \mintocaml[lastline=9]{src/simple_race.ml}
+
+      \greencheck{} Well-defined behavior
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \alt<2->{\mintc{src/simple_race_c11atomics.c}}{\mintc{src/simple_race.c}}
+
+      \alt<2->{\greencheck{} Well-defined behavior}{\redwrong{} Undefined behavior}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+\begin{frame}{Final boss: The OCaml memory model}
+  \begin{itemize}
+    \item TSan will not detect data races on C11 atomic operations
+    \item We do not signal the ``real'' operations to TSan
+    \item Instead, we \emphA{map} OCaml memory operations to C11 memory operations so that TSan detects OCaml data races.
+  \end{itemize}
+\end{frame}

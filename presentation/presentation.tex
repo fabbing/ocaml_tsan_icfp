@@ -1,0 +1,75 @@
+\documentclass[aspectratio=169,compress,10pt,usenames,dvipsnames,svgnames]{beamer}
+\setbeamertemplate{navigation symbols}{}
+
+% Packages
+\usepackage{caption}
+\usepackage{listings}
+\usepackage[newfloat]{minted}
+%\captionsetup[listing]{font=tiny,position=below,skip=0pt}
+
+\usepackage{fontspec}
+% Needed for Arch, but not for NixOS
+%\defaultfontfeatures[FontAwesome]{Path = /usr/share/texmf-dist/fonts/opentype/public/fontawesome/}
+\usepackage{fontawesome}
+
+% List customization package
+\usepackage{enumitem}
+% enumitem redefines list commands, the following lines make sure it does not
+% change the aspect of lists in beamer
+\setitemize{label=\usebeamerfont*{itemize item}%
+  \usebeamercolor[fg]{itemize item}
+  \usebeamertemplate{itemize item}}
+
+%\setsansfont[BoldFont={Fira Sans SemiBold}]{Fira Sans Book}
+\setmonofont{Fira Mono}
+
+\usepackage{syntax}
+
+\usepackage{datetime2}
+\DTMsetstyle{default}
+
+% Packages for tikz diagrams
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usetikzlibrary{fit}
+
+\usepackage[most]{tcolorbox}
+
+% Theme
+\usetheme[block=fill,progressbar=frametitle]{metropolis}
+%\usecolortheme{}
+
+% Make footnote counter local to the current frame: having footnotes start at 2
+% in a frame is ugly.
+\AtBeginEnvironment{frame}{\setcounter{footnote}{0}}
+
+\usemintedstyle{tango}
+
+\input{macros}
+
+% Info
+\title[ThreadSanitizer for OCaml]{Runtime Detection of Data Races in OCaml with ThreadSanitizer}
+\author{Olivier Nicole \qquad Fabrice Buoro \bigskip}
+\institute{Tarides}
+\date{\today}
+%\titlegraphic\includegraphics[width=150px]{pictures/green-screen.png}
+
+% Document
+\begin{document}
+
+% Title page frame
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\input{introduction.tex}
+
+\section{How TSan works}
+\input{how-tsan-works.tex}
+
+\section{So what do we need to support TSan?}
+\input{compiler-support.tex}
+
+\input{outro.tex}
+
+\end{document}
