@@ -21,7 +21,7 @@ The rendered [slides](presentation/presentation.pdf) and [LaTeX sources](present
 
 ## Talk
 
-The talk reccording is [not-yet available](https://watch.ocaml.org/).
+The recording of the presentation is available at [https://www.youtube.com/watch?v=zr9S0Fr_Chc](https://www.youtube.com/watch?v=zr9S0Fr_Chc).
 
 ## Other links
 
